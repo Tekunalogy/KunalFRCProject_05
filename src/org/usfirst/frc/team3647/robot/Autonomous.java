@@ -23,8 +23,7 @@ public class Autonomous
 		}
 		else
 		{
-			Motors.leftTalon.set(0);
-			Motors.rightTalon.set(0);
+			Motors.zero();
 		}
 	}
 	
@@ -42,7 +41,7 @@ public class Autonomous
 				}
 				else
 				{
-					Motors.driveForward(lEnc, rEnc, 0);
+					Motors.zero();
 					input = "backStraight";
 					System.out.println(input);
 					Timer.delay(2);
@@ -59,6 +58,7 @@ public class Autonomous
 				}
 				else
 				{
+					Motors.zero();
 					Motors.driveForward(lEnc, rEnc, 0);
 					input = "Robot Has Stopped";
 					System.out.println("Left Encoder " + lEnc);
@@ -81,7 +81,7 @@ public class Autonomous
 				}
 				else
 				{
-					Motors.driveForward(lEnc, rEnc, 0);
+					Motors.zero();
 					input = "turn";
 					System.out.println(input);
 					Timer.delay(1);
@@ -105,16 +105,14 @@ public class Autonomous
 				}
 				else
 				{
-//					Motors.driveForward(lEnc, rEnc, 0);
-					Motors.leftTalon.set(0);
-					Motors.rightTalon.set(0);
+					Motors.zero();
 					input = "backTurn";
 					System.out.println(input);
 					Timer.delay(1);
 					System.out.println("Left Encoder " + lEnc);
 					enc.resetEncoders();
 				}
-			break;
+				break;
 			
 			case("backTurn"):
 				if(lEnc > -1000)
@@ -131,8 +129,7 @@ public class Autonomous
 				}
 				else
 				{
-					Motors.leftTalon.set(0);
-					Motors.rightTalon.set(0);
+					Motors.zero();
 					input = "backStraight";
 					System.out.println(input);
 					Timer.delay(2);
@@ -144,14 +141,12 @@ public class Autonomous
 			case("backStraight"):
 				if(lEnc > -3000)
 				{
-//					Motors.turn(lEnc, rEnc, 0.4, -0.2);
 					Motors.driveBackward(lEnc, rEnc, -0.5);
 
 				}
 				else
 				{
-					Motors.leftTalon.set(0);
-					Motors.rightTalon.set(0);
+					Motors.zero();
 					input = "Robot Has Stopped";
 					System.out.println("Left Encoder " + lEnc);
 					System.out.println(input);

@@ -6,14 +6,7 @@ public class Motors
 	private static double sumError = 0;
 	private static double prevError = 0;
 	public static Spark leftTalon = new Spark(2);
-	public static Spark rightTalon = new Spark(1);
-	
-//	public static void driveForward(double lEnc, double rEnc, double speed)
-//	{
-//		 leftTalon.set(speed);
-//		 rightTalon.set(-speed);
-//	}
-	
+	public static Spark rightTalon = new Spark(1);	
 	
 	public static void turnRight(double lEnc, double rEnc, double leftSpeed, double rightSpeed)
 	{
@@ -302,4 +295,11 @@ public class Motors
 			rightTalon.set((-speed) - (speedInputValue / 2));
 		}
 	}
+
+	public static void zero()
+	{
+		leftTalon.set(0);
+		rightTalon.set(0);
+	}
+	
 }
