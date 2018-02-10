@@ -3,10 +3,59 @@ import edu.wpi.first.wpilibj.Spark;
 
 public class Motors
 {
-	private static double sumError = 0;
-	private static double prevError = 0;
 	public static Spark leftTalon = new Spark(2);
 	public static Spark rightTalon = new Spark(1);	
+	
+	
+	public static double rightSpeed;
+	public static double leftSpeed;
+	static double prevError = 0;
+	static double sumError = 0;
+	static double kp = 10;
+	static double ki = 0.1;
+	static double kd = 0.03;
+	public static void runPIDforward(double lEnc, double rEnc, double turnForward) 
+	{
+		double error = (lEnc - rEnc - turnForward) / 1000; // scaling down the values to make them easier to
+																		// interpret
+		double diffError = error - prevError;// previous errors
+		sumError = sumError + error;// sum of all the errors
+		double inputValue = kp * error + ki * sumError + kd * diffError; // PID equation
+
+		leftSpeed = .8 * leftSpeed - inputValue / 2; // 80% speed
+		rightSpeed = .8 * rightSpeed + inputValue / 2;
+		if (leftSpeed < 0) { // eliminates error where speed goes below zero
+			leftSpeed = 0;
+		}
+		if (rightSpeed < 0) { // eliminates error where speed goes below zero
+			rightSpeed = 0;
+		}
+
+		prevError = error; // to calculate all errors
+		Motors.leftTalon.set(leftSpeed);
+		Motors.rightTalon.set(-rightSpeed);
+	}
+	
+	public static void runPIDbackward(double lEnc, double rEnc, double turnBackward) {
+		double error = (lEnc - rEnc - turnBackward) / 1000;
+		double diffError = error - prevError;
+		sumError = sumError + error;
+		double inputValue = kp * error + ki * sumError + kd * diffError;
+
+		leftSpeed = .8 * leftSpeed - inputValue / 2;
+		rightSpeed = .8 * rightSpeed + inputValue / 2;
+
+		if (leftSpeed > 0) {
+			leftSpeed = 0;
+		}
+		if (rightSpeed > 0) {
+			rightSpeed = 0;
+		}
+
+		prevError = error;
+		Motors.leftTalon.set(leftSpeed);
+		Motors.rightTalon.set(-rightSpeed);
+	}
 	
 	public static void turnRight(double lEnc, double rEnc, double leftSpeed, double rightSpeed)
 	{
@@ -127,7 +176,7 @@ public class Motors
 	public static void driveBackward(double lEnc, double rEnc, double speed)
 	{
 		double encDiff = Math.abs(Math.abs(lEnc) - Math.abs(rEnc));
-		if(encDiff < 15)
+		if(encDiff < 5)
 		{
 			//tankDrive.tankDrive(speed, speed, false);
 			leftTalon.set(speed);
@@ -137,44 +186,44 @@ public class Motors
 		{
 			if(lEnc < rEnc)
 		 	{
-				leftTalon.set(speed);
-				rightTalon.set(-speed - .075);
+				leftTalon.set(speed + .075);
+				rightTalon.set(-speed);
 				//tankDrive.tankDrive(speed - .05, speed, false);
 		 	} 
 			else
 		 	{
-				leftTalon.set(speed + .075);
-				rightTalon.set(-speed);
+				leftTalon.set(speed);
+				rightTalon.set(-speed - .075);
 		 		//tankDrive.tankDrive(speed, speed - .05, false);
 		 	}
 		 }
-		 else if(encDiff < 200)
+		 else if(encDiff < 150)
 		 {
 			 if(lEnc < rEnc)
 			 {
-				leftTalon.set(speed);
-				rightTalon.set(-speed - .15);
+				leftTalon.set(speed + .15);
+				rightTalon.set(-speed);
 				//tankDrive.tankDrive(speed - .1, speed, false);
 			 }
 			 else
 			 {
-				leftTalon.set(speed + .15);
-				rightTalon.set(-speed);
+				leftTalon.set(speed);
+				rightTalon.set(-speed - .15);
 				//tankDrive.tankDrive(speed, speed - .1, false);
 			 }
 		 }
-		 else if(encDiff < 400)
+		 else if(encDiff < 300)
 		 {
 			 if(lEnc < rEnc)
 			 {
-				leftTalon.set(speed);
-				rightTalon.set(-speed - .25); 
+				leftTalon.set(speed + .25);
+				rightTalon.set(-speed); 
 				//tankDrive.tankDrive(speed - .18, speed, false);
 			 }
 			 else
 			 {
-				leftTalon.set(speed + .25);
-				rightTalon.set(-speed);
+				leftTalon.set(speed);
+				rightTalon.set(-speed - .25);
 				//tankDrive.tankDrive(speed, speed - .18, false);
 			 }
 		 }
@@ -182,14 +231,14 @@ public class Motors
 		 {
 			 if(lEnc < rEnc)
 			 {
-				leftTalon.set(speed);
-				rightTalon.set(-speed - .3);
+				leftTalon.set(speed + .3);
+				rightTalon.set(-speed);
 				//tankDrive.tankDrive(speed - .27, speed, false);
 			 }
 			 else
 			 {
-				 leftTalon.set(speed + .3);
-				 rightTalon.set(-speed);
+				 leftTalon.set(speed);
+				 rightTalon.set(-speed - .3);
 				 
 				 //tankDrive.tankDrive(speed, speed - .27, false);
 			 }
@@ -200,7 +249,7 @@ public class Motors
 	{
 		double encDiff = Math.abs(Math.abs(lEnc) - Math.abs(rEnc));
 		
-		if(encDiff < 10)
+		if(encDiff < 5)
 		{
 			//tankDrive.tankDrive(speed, speed, false);
 			leftTalon.set(speed);
@@ -210,14 +259,14 @@ public class Motors
 		{
 			if(lEnc > rEnc)
 		 	{
-				leftTalon.set(speed - .08);
+				leftTalon.set(speed - .05);
 				rightTalon.set(-speed);
 				//tankDrive.tankDrive(speed - .05, speed, false);
 		 	}
 			else
 		 	{
 				leftTalon.set(speed);
-				rightTalon.set(-(speed - .08));
+				rightTalon.set(-(speed - .05));
 		 		//tankDrive.tankDrive(speed, speed - .05, false);
 		 	}
 		 }
@@ -225,14 +274,14 @@ public class Motors
 		 {
 			 if(lEnc > rEnc)
 			 {
-				leftTalon.set(speed - .16);
+				leftTalon.set(speed - .1);
 				rightTalon.set(-speed);
 				//tankDrive.tankDrive(speed - .1, speed, false);
 			 }
 			 else
 			 {
 				leftTalon.set(speed);
-				rightTalon.set(-(speed - .16));
+				rightTalon.set(-(speed - .1));
 				//tankDrive.tankDrive(speed, speed - .1, false);
 			 }
 		 }
@@ -240,14 +289,14 @@ public class Motors
 		 {
 			 if(lEnc > rEnc)
 			 {
-				leftTalon.set(speed - .25);
+				leftTalon.set(speed - .2);
 				rightTalon.set(-speed); 
 				//tankDrive.tankDrive(speed - .18, speed, false);
 			 }
 			 else
 			 {
 				leftTalon.set(speed);
-				rightTalon.set(-(speed - .25));
+				rightTalon.set(-(speed - .2));
 				//tankDrive.tankDrive(speed, speed - .18, false);
 			 }
 		 }
@@ -255,14 +304,14 @@ public class Motors
 		 {
 			 if(lEnc > rEnc)
 			 {
-				leftTalon.set(speed - .32);
+				leftTalon.set(speed - .25);
 				rightTalon.set(speed);
 				//tankDrive.tankDrive(speed - .27, speed, false);
 			 }
 			 else
 			 {
 				 leftTalon.set(speed);
-				 rightTalon.set(-(speed - .32));
+				 rightTalon.set(-(speed - .25));
 				 
 				 //tankDrive.tankDrive(speed, speed - .27, false);
 			 }
@@ -275,24 +324,24 @@ public class Motors
 		{
 			leftTalon.set(0);
 			rightTalon.set(0);
-			sumError = 0;
-			prevError = 0;
+//			sumError = 0;
+//			prevError = 0;
 			
 		}
 		else
 		{
-			double kP = 7;
-			double kI = 4;
-			double kD = 3;
+			double kP = 10;
+			double kI = 0.1;
+			double kD = 0.03;
 			double error =  lEnc - rEnc;
 			
-			sumError += error;
-			double diffError = error - prevError;
+//			sumError += error;
+//			double diffError = error - prevError;
 			
-			double speedInputValue = (kP * error) + (kI * sumError) + (kD * diffError);
+//			double speedInputValue = (kP * error) + (kI * sumError) + (kD * diffError);
 			
-			leftTalon.set(speed - (speedInputValue / 2));
-			rightTalon.set((-speed) - (speedInputValue / 2));
+//			leftTalon.set(speed - (speedInputValue / 2));
+//			rightTalon.set((-speed) - (speedInputValue / 2));
 		}
 	}
 

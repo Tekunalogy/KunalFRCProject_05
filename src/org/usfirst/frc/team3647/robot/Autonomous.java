@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class Autonomous 
 {
-	String autoSelected = "rightAuto";
+	String autoSelected = "middleAuto";
 	public static String input;
 	
 	public void runAuto(double lEnc, double rEnc, Encoders enc)
@@ -31,29 +31,35 @@ public class Autonomous
 	
 	public void middleAuto(double lEnc, double rEnc, Encoders enc)
 	{
+		
 		switch(input)
 		{
 			case("start"):
 				if(lEnc < 5000)
-				{
-					Motors.driveForward(lEnc, rEnc, 0.9);
+				{	
+					Motors.leftSpeed = 0.5;
+					Motors.rightSpeed = 0.5;
+					Motors.runPIDforward(lEnc, rEnc, 0);
 					System.out.println("Left Encoder " + lEnc);
 				}
 				else
 				{
+					
 					Motors.zero();
 					input = "backStraight";
 					System.out.println(input);
-					Timer.delay(2);
+					Timer.delay(1);
 					enc.resetEncoders();
 				}
 				break;
 				
 			case("backStraight"):
-				if(lEnc > -5000)
+				if(lEnc > -4500)
 				{
+					Motors.leftSpeed = -0.5;
+					Motors.rightSpeed = -0.5;
 //					Motors.turn(lEnc, rEnc, 0.4, -0.2);
-					Motors.driveBackward(lEnc, rEnc, -0.9);
+					Motors.runPIDbackward(lEnc, rEnc, 0);
 
 				}
 				else
@@ -90,7 +96,7 @@ public class Autonomous
 				break;
 				
 			case("turn"):
-				if(lEnc < 1000)
+				if(lEnc < 2000)
 				{
 					if(lEnc + rEnc <= 10)
 					{
@@ -115,7 +121,7 @@ public class Autonomous
 				break;
 			
 			case("backTurn"):
-				if(lEnc > -1000)
+				if(lEnc > -2000)
 				{
 					if(lEnc + rEnc >= -10)
 					{

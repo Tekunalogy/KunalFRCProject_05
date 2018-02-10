@@ -1,6 +1,7 @@
 package org.usfirst.frc.team3647.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -79,9 +80,14 @@ public class Robot extends IterativeRobot
 	{
 		controller.updateMainController();
 		System.out.println("Left Encoder: " + enc.getLeftEncoder() + " Right Encoder: " + enc.getRightEncoder());
-		if(Joysticks.leftJoySticky != 0)
+		if(Joysticks.leftJoySticky > 0)
 		{
-			Motors.driveForward(enc.getLeftEncoder(), enc.getRightEncoder(), Joysticks.leftJoySticky);
+//			Motors.driveForward(enc.getLeftEncoder(), enc.getRightEncoder(), Joysticks.leftJoySticky);
+			Motors.PIDDrive(enc.getLeftEncoder(), enc.getRightEncoder(), Joysticks.leftJoySticky);
+		}
+		else if(Joysticks.leftJoySticky < 0)
+		{
+			Motors.driveBackward(enc.getLeftEncoder(), enc.getRightEncoder(), Joysticks.leftJoySticky);
 		}
 		else if(Joysticks.rightJoyStickx != 0)
 		{
@@ -90,7 +96,7 @@ public class Robot extends IterativeRobot
 		}
 		else
 		{
-			Motors.driveForward(enc.getLeftEncoder(), enc.getRightEncoder(), 0);
+			Motors.zero();
 			enc.resetEncoders();
 		}
 		
