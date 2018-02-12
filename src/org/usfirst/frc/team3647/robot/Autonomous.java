@@ -31,14 +31,14 @@ public class Autonomous
 	
 	public void middleAuto(double lEnc, double rEnc, Encoders enc)
 	{
-		
+		double speedToSet = 0.7;
 		switch(input)
 		{
 			case("start"):
 				if(lEnc < 5000)
 				{	
-					Motors.leftSpeed = 0.5;
-					Motors.rightSpeed = 0.5;
+					Motors.leftSpeed = speedToSet;
+					Motors.rightSpeed = speedToSet;
 					Motors.runPIDforward(lEnc, rEnc, 0);
 					System.out.println("Left Encoder " + lEnc);
 				}
@@ -56,9 +56,8 @@ public class Autonomous
 			case("backStraight"):
 				if(lEnc > -4500)
 				{
-					Motors.leftSpeed = -0.5;
-					Motors.rightSpeed = -0.5;
-//					Motors.turn(lEnc, rEnc, 0.4, -0.2);
+					Motors.leftSpeed = -speedToSet;
+					Motors.rightSpeed = -speedToSet;
 					Motors.runPIDbackward(lEnc, rEnc, 0);
 
 				}
@@ -77,12 +76,15 @@ public class Autonomous
 	
 	public void rightAuto(double lEnc, double rEnc, Encoders enc)
 	{
+		double speedToSet = 0.7;
 		switch(input)
 		{
 			case("start"):
 				if(lEnc < 3000)
 				{
-					Motors.driveForward(lEnc, rEnc, 0.5);
+					Motors.leftSpeed = speedToSet;
+					Motors.rightSpeed = speedToSet;
+					Motors.runPIDforward(lEnc, rEnc, 0);
 					System.out.println("Left Encoder " + lEnc);
 				}
 				else
@@ -147,7 +149,9 @@ public class Autonomous
 			case("backStraight"):
 				if(lEnc > -3000)
 				{
-					Motors.driveBackward(lEnc, rEnc, -0.5);
+					Motors.leftSpeed = -speedToSet;
+					Motors.rightSpeed = -speedToSet;
+					Motors.runPIDbackward(lEnc, rEnc, 0);
 
 				}
 				else
